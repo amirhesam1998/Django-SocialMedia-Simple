@@ -1,13 +1,16 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Home</a>
+      <a class="navbar-brand" href="{% url "home:homepage" %}">Home</a>                     {% comment "" %}{% url "namespace:urlname %}{% endcomment %}
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Sign Up</a>
+            <a class="nav-link active" aria-current="page" href="{% url "account:user_register" %}">Sign Up</a>         {% comment "" %}{% url "namespace:urlname %}{% endcomment %}
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url "account:user_login" %}">Login</a>         
           </li>
         </ul>
       </div>

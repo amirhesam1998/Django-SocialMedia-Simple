@@ -1,12 +1,47 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.views import View
-from .forms import UserRegistrationForms
-
-class RegisterView(View):
+from .forms import UserRegistrationForms , UserLoginForm
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate , login
+class UserRegisterView(View):
+    form_class = UserRegistrationForms
+    template_name = 'account/register.html'
+    
     def get(self , request):
-        form = UserRegistrationForms()
-        return render(request , 'account/register.html' ,{'form' : form})
+        form = self.form_class()
+        return render(request , self.template_name ,{'form' : form})
     
     def post(self,request):
-        form = UserRegistrationForms()
-        return render(request , 'account/register.html' ,{'form' : form})
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            User.objects.create_user(cd['username'],cd['email'],cd['password1'])
+            messages.success(request , 'your registry is successfully' , 'success')
+            return redirect('home:homepage')
+        return render(request , self.template_name ,{'form' : form})
+    
+            
+            
+class UserLoginView(View):
+    template_name = 'account/login.html'
+    form_class = UserLoginForm
+    
+    def get(self,request):
+        form = self.form_class()
+        return render(request , self.template_name , {'form' : form})
+    
+    def post(self,request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request , username=cd['username'] , password=cd['password'])
+            if user is not None:
+                login(request , user)
+                messages.success(request , "you logged in successfully" , "success")
+                return redirect('home:homepage')
+            messages.error(request , "username or password is wrong" , 'warning')
+        return render(request , self.template_name ,{'form' : form})
+        
+
+    
