@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 class UserRegisterView(View):
+    
     form_class = UserRegistrationForms
     template_name = 'account/register.html'
     
@@ -64,8 +65,19 @@ class UserLoginView(View):
         
 
 class LogoutView(LoginRequiredMixin,View):
+    '''
+    
+    LoginRequiredMixin This method means that only logged in users can have access
+    '''
     def get(self,request):
         logout(request)
         messages.success(request , "logout is successfully", 'success')
         return redirect('home:homepage')
     
+
+class UserProfileView(LoginRequiredMixin,View):
+    template_name = 'account/profile.html'
+    
+    def get(self , request , user_id):
+        user = User.objects.get(pk=user_id)
+        return render(request , self.template_name , {'user':user})
