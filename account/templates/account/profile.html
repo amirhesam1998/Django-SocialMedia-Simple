@@ -6,7 +6,15 @@
 
 
 <h2 class='text-center'>{{ user.username }}</h2>
+
 <a href="{% url "home:post_create" %}" class="btn btn-info">create</a>
+
+{% if request.user.id != user.id and not is_following %}
+    <a class='btn btn-primary' href="{% url "account:user_follow" user.id%}" class="card-body"> Follow</a>
+{% elif request.user.id != user.id and is_following %}
+    <a class='btn btn-primary' href="{% url "account:user_unfollow" user.id%}" class="card-body"> UnFollow</a>
+{% endif %}
+
 <div class='card'>
     {% for post in posts %}
         <a href="{{ post.get_absolute_url }}" class="card-body">  {{ post.body| truncatewords:3 }} </a>      {% comment %}  {% url "home:post_detail" post.id post.slug %} == {{ post.get_absolute_url }} {% endcomment %}
