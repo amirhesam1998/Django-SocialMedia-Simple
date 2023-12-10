@@ -8,5 +8,33 @@
     {% endif %}
 
     <h4><a href={% url "account:user_profile" post.user.id %} >{{ post.user.username}}</a> - {{post.updated|date:"Y M"}} </h4>
-    <p>{{ post.body }} </p>
+    <p>{{ post.body }} </p><hr/>
+
+    {% if request.user.is_authenticated %}
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type='submit' value='send'>
+        </form> </br>
+    
+    {% else %}
+        <p class='alert alert-danger'> only loged in users can comment </p>
+    {% endif %}
+
+
+
+    {% for comment in comments  %}
+        <div class='card bg-dark text-white' >
+            <p class='card-header'> {{ comment.user }} | {{ comment.created | timesince }} </p>
+            <p class='card-body'> {{ comment.body }} </p>
+
+            {% for reply in comment.rcomments.all  %}
+                <p class ='bg-primary p-3 m-2'> {{reply.user}} | {{ reply.created | timesince }}<br/> {{ reply.body}} </p>
+            {% endfor %}
+        </div></br>
+    
+    {% empty %}
+        <p> no comments yet </p>
+    {% endfor %}
+
 {% endblock%}
