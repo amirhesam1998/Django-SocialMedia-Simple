@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post , Comment
+from .models import Post , Comment ,  Vote
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -13,7 +13,11 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('user' , 'post' , 'created' , 'is_reply')
-    # search_fields = ('slug','body')
-    # list_filter = ('updated',)
-    # prepopulated_fields = {'slug':('body',)}   #create by body field
     raw_id_fields= ('user','post','reply')
+    
+    
+@admin.register(Vote)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('user' , 'post')
+    raw_id_fields= ('user' , 'post')
+
