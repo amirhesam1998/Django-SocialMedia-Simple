@@ -2,7 +2,7 @@ from typing import Any
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
+from .models import Profile
 class UserRegistrationForms(forms.Form):
     '''
     registration form for users
@@ -46,3 +46,11 @@ class UserRegistrationForms(forms.Form):
 class UserLoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput({'class':'form-control'}))            #{'class':'form-control'} this is in bootstrap
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control' , 'placeholder' : 'password1'}))
+
+
+class EditUserForm(forms.ModelForm):
+    email = forms.EmailField()
+    
+    class Meta:
+        model = Profile
+        fields = ('age','bio')
