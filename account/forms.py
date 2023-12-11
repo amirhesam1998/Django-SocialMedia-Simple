@@ -49,6 +49,9 @@ class UserLoginForm(forms.Form):
 
 
 class EditUserForm(forms.ModelForm):
+    '''
+    for edit profile view
+    '''
     email = forms.EmailField()
     
     class Meta:

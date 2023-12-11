@@ -4,8 +4,12 @@ from django.contrib.auth.models import User
 class Emailbackend:
     '''
     Email validation instead of username
+    Set changes in setting.py line 129
     '''
     def authenticate(self,request,username=None,password=None):
+        '''
+        Customize authenticate
+        '''
         try:
             user = User.objects.get(email = username)
             if user.check_password(password):

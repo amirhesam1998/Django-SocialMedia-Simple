@@ -44,6 +44,9 @@ class UserLoginView(View):
     form_class = UserLoginForm
     
     def setup(self,request,*args,**kwargs):
+        '''
+        A method called setup for the initial settings that receives the next information from the GET request.
+        '''
         self.next = request.GET.get('next')
         return super().setup(request, *args, **kwargs)
     
@@ -63,7 +66,7 @@ class UserLoginView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request , username=cd['username'] , password=cd['password'])
+            user = authenticate(request , username=cd['username'] , password=cd['password'])  #User authentication using username and password input.
             if user is not None:
                 login(request , user)
                 messages.success(request , "you logged in successfully" , "success")
@@ -76,7 +79,6 @@ class UserLoginView(View):
 
 class LogoutView(LoginRequiredMixin,View):
     '''
-    
     LoginRequiredMixin This method means that only logged in users can have access
     '''
     def get(self,request):
@@ -99,25 +101,40 @@ class UserProfileView(LoginRequiredMixin,View):
     
 
 class UserPasswordRestView(PasswordResetView):
+    '''
+    Display the email input form (template_name) and move to the next step(success_url) and the contents sent to the email(email_template_name)
+    '''
     template_name = 'account/password_reset_form.html'
-    success_url = reverse_lazy('account:password_reset_done')
-    email_template_name = 'account/password_reset_email.html'
+    success_url = reverse_lazy('account:password_reset_done')  #reverse_lazy == That is, wait until the user enters her email and show her this page
+    email_template_name = 'account/password_reset_email.html'         
     
  
    
 class UserPasswordRestDoneView(PasswordResetDoneView):
+    '''
+    Display the message of the success of email sending
+    '''
     template_name = 'account/password_reset_done.html'
     
     
 class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    '''
+    Display new passwords form for changes
+    '''
     template_name = 'account/password_reset_confirm.html'
     success_url = reverse_lazy('account:password_reset_complete')
     
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    '''
+    Display the message for finishing process
+    '''
     template_name = 'account/password_reset_complete.html'
     
     
 class UserFollowView(LoginRequiredMixin , View):
+    '''
+    following method ((from_user:request.user(login user) --> to_user:user_following ))
+    '''
     def get(self , request , user_id):
         user_following = User.objects.get(id=user_id)
         relation = Relation.objects.filter(from_user = request.user , to_user=user_following)
@@ -129,9 +146,12 @@ class UserFollowView(LoginRequiredMixin , View):
         return redirect('account:user_profile' , user_following.id)
 
 class UserUnfollowView(LoginRequiredMixin , View):
+    '''
+    unfollowing method ((from_user:request.user(login user) --> to_user:user_unfollowing ))
+    '''
     def get(self , request , user_id):
         user_unfollowing = User.objects.get(id=user_id)
-        relation = Relation.objects.filter(from_user = request.user , to_user=user_following)
+        relation = Relation.objects.filter(from_user = request.user , to_user=user_unfollowing)
         if relation.exists():
             relation.delete()
             messages.success(request , "you unfollowed this user" , 'success')
@@ -145,13 +165,17 @@ class EditUserView(LoginRequiredMixin,View):
     
     def get(self,request):
         form = self.form_class(instance=request.user.profile , initial={'email':request.user.email})
+        '''
+        We used instance to show the user's current information inside the form, and we used initial because the email field was not in the profile model,
+        but it was there in the EditUserForm form, that's why we couldn't receive the email from the instance.
+        '''
         return render(request , self.template_name , {'form':form})
         
     def post(self,request):
         form = self.form_class(request.POST , instance=request.user.profile , initial={'email':request.user.email})
         if form.is_valid():
             form.save()
-            request.user.email = form.cleaned_data['email']
+            request.user.email = form.cleaned_data['email']  #Email should be saved separately
             request.user.save()
             messages.success(request , 'profile edit successfully' , 'success')
         return redirect('account:user_profile' , request.user.id)

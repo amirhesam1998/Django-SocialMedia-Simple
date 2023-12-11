@@ -6,4 +6,7 @@ class AccountConfig(AppConfig):
     name = "account"
     
     def ready(self):
+        '''
+        Apply the written signal file to the entire application
+        '''
         from . import signals
