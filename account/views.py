@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView , PasswordResetDoneView , PasswordResetConfirmView , PasswordResetCompleteView
 from django.urls import reverse_lazy
-from .models import Relation
+from .models import Relation 
 
 class UserRegisterView(View):
     
